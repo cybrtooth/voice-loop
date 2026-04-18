@@ -7,7 +7,7 @@ Short answer: **not yet practical for a good voice experience**, but worth revis
 | Component | Mac (current) | Raspberry Pi |
 |-----------|--------------|-------------|
 | LLM runtime | mlx-vlm (Apple Silicon only) | llama.cpp or LiteRT-LM |
-| AEC | LiveKit APM (WebRTC AEC3) | speexdsp or [thewh1teagle/aec](https://github.com/thewh1teagle/aec) |
+| AEC | LiveKit APM (WebRTC AEC3) | [PipeWire `module-echo-cancel`](https://docs.pipewire.org/page_module_echo_cancel.html) (webrtc backend — system-level), speexdsp, or [thewh1teagle/aec](https://github.com/thewh1teagle/aec) |
 | Everything else | — | unchanged (Moonshine, Kokoro, Silero VAD, Smart Turn — all ONNX, ARM-compatible) |
 
 The architecture — VAD → ASR → streaming LLM → sentence-pipeline → TTS — ports cleanly. It's really two dependency swaps.
@@ -33,6 +33,7 @@ For voice you realistically need **20+ t/s** to feel natural.
 - Google's [LiteRT-LM](https://github.com/google-ai-edge/LiteRT-LM) is purpose-built for edge deployment and supports macOS/Linux/Pi
 - Google claim ~7.6 t/s for Gemma 4 E2B on Pi 5 with LiteRT-LM — unverified but plausible given the per-core uplift
 - Even 7–8 t/s is borderline: first sentence ~2 s, but a full 100-token response still takes ~13 s
+- **Note:** LiteRT-LM does not currently run on Pi 4 ([google-ai-edge/LiteRT-LM#1847](https://github.com/google-ai-edge/LiteRT-LM/issues/1847)). Pi 5 only.
 
 ### To test LiteRT-LM on Pi 5
 
